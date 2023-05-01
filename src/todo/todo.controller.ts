@@ -1,4 +1,17 @@
-import {Body, Controller, Get, HttpCode, NotFoundException, Param, Post, Req, Res} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+    Query,
+    Req,
+    Res
+} from '@nestjs/common';
 import {Request, Response} from "express";
 import {Todo, TodoStatusEnum} from "./entities/todo.entities";
 import { v4 as uuidv4 } from 'uuid';
@@ -18,7 +31,7 @@ export class TodoController {
 
     }
     @Get('/:id')
-    getTodosById(@Param('id') id: string){
+    getTodosById(@Param('id') id: string ){
         const newTodo= this.todos.find(todo=>todo.id===id);
         if(!newTodo){
            throw new NotFoundException("Todo not found");
@@ -58,6 +71,34 @@ export class TodoController {
         console.log(id,name,description,date,status);
 
         return {id,name,description,date,status};
+
+    }
+
+    @Delete('/:id')
+    deleteTodosById(@Param('id') id: string){
+        const newTodo= this.todos.find(todo=>todo.id===id);
+        if(!newTodo){
+            throw new NotFoundException("Todo not found");
+        }
+        this.todos=this.todos.filter(todo=>todo.id!==id);
+        return this.todos;
+    }
+
+    @Put('/:id')
+    putTodosById(@Param('id') id: string , @Body() newTodo:Partial<Todo>){
+      const todo=this.getTodosById(id);
+            if(!todo){
+                throw new NotFoundException("Todo not found");
+            }
+            todo.name=newTodo.name?newTodo.name:todo.name;
+            todo.description=newTodo.description?newTodo.description:todo.description;
+        if(!newTodo.status){
+            newTodo.status=todo.status;
+        }
+        else newTodo.status=TodoStatusEnum[newTodo.status];
+            todo.status=newTodo.status;
+            return todo;
+
 
     }
     }
