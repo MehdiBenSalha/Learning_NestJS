@@ -6,15 +6,6 @@ import { TodoController } from './todo.controller';
 })
 export class TodoModule {
 
-     id: string;
-     name: string;
-        description: string;
-        date: Date;
-        status:TodoStatusEnum;
 
-}
-export enum TodoStatusEnum {
-  'actif'="En cours",
-  'done'="Finalisé",
-  'waiting'="En attente"
+
 }
